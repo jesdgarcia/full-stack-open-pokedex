@@ -31,7 +31,7 @@ jobs:
           start: npm run start-prod
           wait-on: http://localhost:5000
       - if: ${{ github.event_name == 'push' }}
-        name: heroku deploy
+        name: Heroku deploy
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
@@ -40,3 +40,9 @@ jobs:
           healthcheck: "https://${{secrets.HEROKU_APP_NAME}}.herokuapp.com/health"
           checkstring: "ok"
           rollbackonhealthcheckfailed: true
+      - if: ${{ github.event_name == 'push' }}
+        name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.33.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRY_RUN: true
